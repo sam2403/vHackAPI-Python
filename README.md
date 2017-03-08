@@ -18,7 +18,7 @@ $ pip install tesseract
 
 for launch  
 ```sh
-$ python main.py 
+$ python2.7 main.py 
 or 
 $ ./main.py
 ``` 
