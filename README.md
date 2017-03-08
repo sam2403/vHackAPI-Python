@@ -14,9 +14,14 @@ $ pip install requests
 $ pip install pytesseract  
 or  
 $ pip install tesseract
-```
+``` 
 
-just launch python main.py  
+for launch  
+```sh
+& python main.py 
+or 
+& ./main.py
+``` 
 
 Result:  
 ![](http://www.cuby-hebergs.com/dl/vhack.png)
