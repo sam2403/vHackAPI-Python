@@ -26,7 +26,7 @@ api = API("username","password")
 maxanti_normal = 1500
 
 # Enter Max Antivir to attack tournament
-maxanti_tournament = 1500
+maxanti_tournament = 1900
 
 # Enter Amount of Attacks normal
 attacks_normal = 3

@@ -63,7 +63,7 @@ class Utils:
 		return n
 
 	def requestString(self, format, data, php):
-		#time.sleep(1)
+		time.sleep(1)
 		for i1 in range(0,10):
 			try:
 				r = urllib2.urlopen(self.generateURL(format,data,php))
