@@ -84,13 +84,3 @@ class OCR:
 
 	def __init__(self):
 		self.nrlist = [[13,14,15,8,6,7,15,15,12],[4,4,15,15,15],[9,12,13,11,14,14,13,9],[7,9,9,10,10,15,15,14],[5,8,8,11,10,12,15,15],[12,12,11,9,9,13,13,12],[13,15,10,9,9,12,14,11],[4,11,13,15,9,6,4],[14,15,12,9,10,15,15,14],[10,13,14,10,11,15,15,14]]
-
-
-
-if len(sys.argv) != 2:
-	print "\nUsage: python ocr.py 'response_string'"
-	print "You have to surround your response_string with these signs '\n"
-else:
-	response = sys.argv[1]
-	o = OCR()
-	print o.getSolution(response)

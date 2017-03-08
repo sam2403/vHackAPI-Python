@@ -5,6 +5,7 @@ from classes import API
 from classes import IP
 from classes import Passwords
 from utils import Utils
+from ocr import OCR
 import time
 import json
 import subprocess
@@ -12,6 +13,8 @@ from PIL import Image
 import base64
 import pytesseract
 import cStringIO
+import requests
+import re
 
 
 class Console:
@@ -29,12 +32,11 @@ class Console:
 	def enterPassword(self, passwd, target, uhash):
 		passwd = passwd.split("p")
 		ut = Utils()
-		time.sleep(2)
 		temp = ut.requestString("user::::pass::::port::::target::::uhash", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + str(passwd[1].strip()) + "::::" +  str(target) + "::::" + str(uhash), "vh_trTransfer.php")
 		if temp == "10":
 			return False
 		else:
-			return True
+			return temp
 
 	def scanUser(self):
 		ut = Utils()
@@ -107,75 +109,107 @@ class Console:
 		info = json.loads(info)
 		uhash = info['uhash']
 		temp = ut.requestString("user::::pass::::uhash::::target", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + uhash + "::::" + ip, "vh_loadRemoteData.php")
+
 		jsons = json.loads(temp)
+		s = requests.Session()
+		datasubmit = {'uName':'Ultimate', 'pWord':'testtest1234',}
+		r = s.post('https://www.echoofamarok.com/RedX/assets/php/login', data=datasubmit)
+		try:
+			pat = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+			test = pat.match(jsons['username'])
+			if test:
+   				datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+			else:
+   				datasubmit = {'nIP':jsons['ipaddress'], 'nName': jsons['username'], 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+
+		except TypeError:
+			datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+		
+		r = s.post('https://www.echoofamarok.com/RedX/assets/php/AddEntry', data=datasubmit)
+		print "Add to database"
+		r.connection.close()
 		if temp == "null":
 			return False
-		cmd = "python ocr.py '"+ str(temp) + "'"
-		imgs = subprocess.check_output(cmd, shell=True)
-		print temp
+		o = OCR() 
+		imgs = o.getSolution(str(temp))
 		if imgs != "0":
-			password = self.enterPassword(imgs, ip, uhash)
-			if password:
-				print password
-				return True
-				user = self.scanUser()
-				if len(user) > 2:
-					fwlevel = user[0].split(":")[1]
-					avlevel = user[1].split(":")[1]
-					spamlevel = user[2].split(":")[1]
-					sdklevel = user[3].split(":")[1]
-					ipsplevel = user[4].split(":")[1]
-					money = user[5].split(":")[1]
-					saving = user[6].split(":")[1]
-					anonymous = user[7].split(":")[1]
-					username = user[8].split(":")[1]
-					winlo = user[9].split(":")[1]
-					winchance = user[10].split(":")[1]
-					spywarelevel = user[11].split(":")[1]
+			user = jsons['username']
+			winchance = jsons['winchance']
+			try:
+				if not "?" in user and not "?" in (winchance):
+					fwlevel = jsons['fw']
+					avlevel = jsons['av']
+					spamlevel = jsons['spam']
+					sdklevel = jsons['sdk']
+					ipsplevel = jsons['sdk']
+					money = jsons['money']
+					saving = jsons['savings']
+					anonymous = jsons['anonymous']
+					username = jsons['username']
+					winlo = jsons['winelo']
+					winchance = jsons['winchance']
+					spywarelevel = jsons['spyware']
 				else:
 					avlevel = "????"
 					winchance = 0
+			except TypeError:
+				try:
+					if not "?" in str(winchance):
+						fwlevel = jsons['fw']
+						avlevel = jsons['av']
+						spamlevel = jsons['spam']
+						sdklevel = jsons['sdk']
+						ipsplevel = jsons['sdk']
+						money = jsons['money']
+						saving = jsons['savings']
+						anonymous = jsons['anonymous']
+						username = jsons['username']
+						winlo = jsons['winelo']
+						winchance = jsons['winchance']
+						spywarelevel = jsons['spyware']
+				except TypeError:
+					print "no scan"
+					return False
 
-				if type(winchance) == "int":
+			if type(winchance) == "int":
 					if "?" in winchance:
 						winchance = 0
 
-				if not "?" in avlevel:
-					if int(avlevel) < max and int(winchance) > 75 and anonymous == "YES":
-						out = self.transferMoney(ip)
-						if len(out) == 5:
-							if not "?" in money:
-								print "\n[TargetIP: " + ip +"]\n\nMade " + "{:11,}".format(int(out[1].split(":")[1])) + " and " + "{:2d}".format(int(out[3].split(":")[1])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + "{:11,}".format(int(money)) + "\n YourWinChance: " + winchance + " Anonymous: "+ anonymous +" username: "+ username + " saving: " + saving
-							else:
-								print "\n[TargetIP: " + ip + "]\n\nMade " + "{:11,}".format(int(out[1].split(":")[1])) + " and " + "{:2d}".format(int(out[3].split(":")[1])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + money + "\n YourWinChance: " + winchance + " Anonymous: " + anonymous +" username: "+ username + " saving: " + saving
-							log = self.clearLog(ip)
-							if log == True:
-								print "clearing log"
-							else:
-								print "no clear log upgrade your SDK"
-							return True
+			if not "?" in str(avlevel):
+				if int(avlevel) < max and int(winchance) > 75 and anonymous == "YES":
+					password = self.enterPassword(imgs, ip, uhash)
+					jsons = json.loads(password)
+					if password:
+						if not "?" in str(money):
+							print "\n[TargetIP: " + str(ip) +"]\n\nMade " + "{:11,}".format(int(jsons['amount'])) + " and " + "{:2d}".format(int(jsons['eloch'])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + "{:11,}".format(int(money)) + "\n YourWinChance: " + str(winchance) + " Anonymous: "+ str(anonymous) +" username: "+ str(username) + " saving: " + str(saving)
+						else:
+							print "\n[TargetIP: " + str(ip) + "]\n\nMade " + "{:11,}".format(int(jsons['amount'])) + " and " + "{:2d}".format(int(jsons['eloch'])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + money + "\n YourWinChance: " + winchance + " Anonymous: " + anonymous +" username: "+ username + " saving: " + saving
+						return True
 					else:
-						#print "\n"
-						if int(avlevel) < max:
-							#print "Antivir to high " + str(avlevel)
-							#print "passed"
-							pass
-						if int(winchance) < 75:
-							#print "winchance is poor: " + str(winchance)
-							#print "passed"
-							pass
-						if anonymous == "NO":
-							#print "No Anonymous need"
-							#print "passed"
-							pass
+						print "Password Wrong"
+						return False
 				else:
-					if len(avlevel) == 4:
-						print avlevel
-						print "Cant load User"
-					else:
-						print "Scan to low"
+					#print "\n"
+					if int(avlevel) < max:
+						print "Antivir to high " + str(avlevel)
+						#print "passed"
+						return False
+					if int(winchance) < 75:
+						print "winchance is poor: " + str(winchance)
+						#print "passed"
+						return False
+					if anonymous == "NO":
+						print "No Anonymous need"
+						#print "passed"
+						return False
 			else:
-				print "Password Wrong"
+				if len(avlevel) == 3:
+					print avlevel
+					print "Cant load User"
+					return False
+				else:
+					print "Scan to low"
+					return False
 		else:
 			print "Password Error"
 		return False

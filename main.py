@@ -110,10 +110,10 @@ while True:
 		wait = round(uniform(0,1), 2)
 
 	else:
-		print "Waiting... in normal " + str(wait) + "s"
+		print "Waiting... in normal " + str(wait_load) + "s"
 		attackneeded = True
 
 		if attackneeded:
-			c.attack(attacks_normal, maxanti_normal, wait)
+			c.attack(attacks_normal, maxanti_normal, wait_load)
 			attackneeded = False
 		wait_load = round(uniform(1,5), 2)
