@@ -81,7 +81,7 @@ class Console:
 		temp = ut.requestString("user::::pass::::uhash::::global", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + str(uhash) + "::::" + "0", "vh_getImg.php")
 		jsons = json.loads(temp)
 		for i in range(0, len(jsons["data"])):
-			hostname = jsons["data"][i]["hostname"]
+			hostname = str(jsons["data"][i]["hostname"])
 			imgstring = 'data: image/png;base64,'+jsons["data"][i]['img']
 			imgstring = imgstring.split('base64,')[-1].strip()
 			pic = cStringIO.StringIO()
@@ -92,12 +92,12 @@ class Console:
 			#bg = Image.new("RGB", image.size, (255,255,255))
 			#bg.paste(image,image)
 			if "Hatched by the FBI" in pytesseract.image_to_string(image) or "Watched by the FBI" in pytesseract.image_to_string(image):
-				return 0, hostname
+				return 1, hostname
 			else:
 				temp = ut.requestString("user::::pass::::uhash::::hostname", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + str(uhash) + "::::" + hostname, "vh_scanHost.php")
 				try:
 					jsons = json.loads(temp)
-					return 0, jsons['ipaddress']
+					return 0, str(jsons['ipaddress'])
 				except TypeError:
 					return 0, 0
 				#print str(jsons['ipaddress'])
@@ -124,14 +124,14 @@ class Console:
 					print "False data"
 					return False
 			else:
-				try:
-					datasubmit = {'nIP':jsons['ipaddress'], 'nName': jsons['username'], 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
-				except TypeError:
-					print "False data"
-					return False
+				datasubmit = {'nIP':jsons['ipaddress'], 'nName': jsons['username'], 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
 		except TypeError:
-			datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
-		
+			try:
+				datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+			except TypeError:
+				print "DATA FALSE"
+				return False
+
 		r = s.post('https://www.echoofamarok.com/RedX/assets/php/AddEntry', data=datasubmit)
 		print "\nAdd to database " + str(jsons['ipaddress'])
 		r.connection.close()
@@ -231,14 +231,14 @@ class Console:
 	def attack(self, amount, max, wait):
 		i1 = 0
 		while i1 < amount:
-			host, ips = self.getIP(True)
-			if ips != 0:
+			FBI, ips = self.getIP(True)
+			if FBI == 0:
 				if self.attackIP(ips,max):
 					i1 += 1
 					print "Waiting..."
 					time.sleep(wait)
 			else:
-				print "Warning FBI Blocking account in " + str(host)
+				print "Warning FBI Blocking account in " + str(ips) + " I'm not attack"
 
 	def __init__(self,api):
 		self.api = api
