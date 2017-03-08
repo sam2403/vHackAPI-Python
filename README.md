@@ -18,9 +18,9 @@ $ pip install tesseract
 
 for launch  
 ```sh
-& python main.py 
+$ python main.py 
 or 
-& ./main.py
+$ ./main.py
 ``` 
 
 Result:  
