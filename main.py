@@ -23,7 +23,7 @@ def count_keys(mydict):
 # Enter username and password
 api = API("username","password")
 # Enter Max Antivir to attack in normal mode
-maxanti_normal = 1000
+maxanti_normal = 1500
 
 # Enter Max Antivir to attack tournament
 maxanti_tournament = 1500
@@ -110,10 +110,10 @@ while True:
 		wait = round(uniform(0,1), 2)
 
 	else:
-		print "Waiting... in normal " + str(wait_load) + "s"
+		print "Waiting... in normal " + str(wait) + "s"
 		attackneeded = True
 
 		if attackneeded:
-			c.attack(attacks_normal, maxanti_normal, wait_load)
+			c.attack(attacks_normal, maxanti_normal, wait)
 			attackneeded = False
 		wait_load = round(uniform(1,5), 2)

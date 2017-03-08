@@ -111,16 +111,38 @@ class Console:
 		temp = ut.requestString("user::::pass::::uhash::::target", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + uhash + "::::" + ip, "vh_loadRemoteData.php")
 
 		jsons = json.loads(temp)
+		s = requests.Session()
+		datasubmit = {'uName':'username', 'pWord':'password',}
+		r = s.post('https://www.echoofamarok.com/RedX/assets/php/login', data=datasubmit)
+		try:
+			pat = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+			test = pat.match(jsons['username'])
+			if test:
+				try:
+   					datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+				except TypeError:
+					print "False data"
+					return False
+			else:
+				try:
+					datasubmit = {'nIP':jsons['ipaddress'], 'nName': jsons['username'], 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+				except TypeError:
+					print "False data"
+					return False
+		except TypeError:
+			datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+		
+		r = s.post('https://www.echoofamarok.com/RedX/assets/php/AddEntry', data=datasubmit)
+		print "\nAdd to database " + str(jsons['ipaddress'])
 		r.connection.close()
-		if temp == "null":
-			return False
+
 		o = OCR() 
 		imgs = o.getSolution(str(temp))
-		if imgs != "0":
+		if imgs != None:
 			user = jsons['username']
 			winchance = jsons['winchance']
 			try:
-				if not "?" in user and not "?" in (winchance):
+				if not "?" in str(winchance):
 					fwlevel = jsons['fw']
 					avlevel = jsons['av']
 					spamlevel = jsons['spam']
@@ -136,45 +158,45 @@ class Console:
 				else:
 					avlevel = "????"
 					winchance = 0
-			except TypeError:
-				try:
-					if not "?" in str(winchance):
-						fwlevel = jsons['fw']
-						avlevel = jsons['av']
-						spamlevel = jsons['spam']
-						sdklevel = jsons['sdk']
-						ipsplevel = jsons['sdk']
-						money = jsons['money']
-						saving = jsons['savings']
-						anonymous = jsons['anonymous']
-						username = jsons['username']
-						winlo = jsons['winelo']
-						winchance = jsons['winchance']
-						spywarelevel = jsons['spyware']
-				except TypeError:
-					print "no scan"
+					print "no scan username"
 					return False
 
+			except TypeError:
+				fwlevel = jsons['fw']
+				avlevel = jsons['av']
+				spamlevel = jsons['spam']
+				sdklevel = jsons['sdk']
+				ipsplevel = jsons['sdk']
+				money = jsons['money']
+				saving = jsons['savings']
+				anonymous = jsons['anonymous']
+				username = jsons['username']
+				winlo = jsons['winelo']
+				winchance = jsons['winchance']
+				spywarelevel = jsons['spyware']
+
 			if type(winchance) == "int":
-					if "?" in winchance:
-						winchance = 0
+				if "?" in winchance:
+					winchance = 0
+					print "no chance"
+					return False
 
 			if not "?" in str(avlevel):
-				if int(avlevel) < max and int(winchance) > 75 and anonymous == "YES":
+				if int(avlevel) < max and int(winchance) > 75 and str(anonymous) == "YES":
 					password = self.enterPassword(imgs, ip, uhash)
 					jsons = json.loads(password)
 					if password:
 						if not "?" in str(money):
 							print "\n[TargetIP: " + str(ip) +"]\n\nMade " + "{:11,}".format(int(jsons['amount'])) + " and " + "{:2d}".format(int(jsons['eloch'])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + "{:11,}".format(int(money)) + "\n YourWinChance: " + str(winchance) + " Anonymous: "+ str(anonymous) +" username: "+ str(username) + " saving: " + str(saving)
+							return True
 						else:
 							print "\n[TargetIP: " + str(ip) + "]\n\nMade " + "{:11,}".format(int(jsons['amount'])) + " and " + "{:2d}".format(int(jsons['eloch'])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + money + "\n YourWinChance: " + winchance + " Anonymous: " + anonymous +" username: "+ username + " saving: " + saving
-						return True
 					else:
 						print "Password Wrong"
 						return False
 				else:
 					#print "\n"
-					if int(avlevel) < max:
+					if int(avlevel) > max:
 						print "Antivir to high " + str(avlevel)
 						#print "passed"
 						return False
@@ -182,12 +204,13 @@ class Console:
 						print "winchance is poor: " + str(winchance)
 						#print "passed"
 						return False
-					if anonymous == "NO":
+					if str(anonymous) == "NO":
 						print "No Anonymous need"
 						#print "passed"
 						return False
 			else:
-				if len(avlevel) == 3:
+				print avlevel
+				if len(avlevel) == 4:
 					print avlevel
 					print "Cant load User"
 					return False
@@ -196,7 +219,7 @@ class Console:
 					return False
 		else:
 			print "Password Error"
-		return False
+			return False
 
 	def attackIP2(self,ip,max):	
 		ut = Utils()
