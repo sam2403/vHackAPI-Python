@@ -111,22 +111,6 @@ class Console:
 		temp = ut.requestString("user::::pass::::uhash::::target", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + uhash + "::::" + ip, "vh_loadRemoteData.php")
 
 		jsons = json.loads(temp)
-		s = requests.Session()
-		datasubmit = {'uName':'Ultimate', 'pWord':'testtest1234',}
-		r = s.post('https://www.echoofamarok.com/RedX/assets/php/login', data=datasubmit)
-		try:
-			pat = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
-			test = pat.match(jsons['username'])
-			if test:
-   				datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
-			else:
-   				datasubmit = {'nIP':jsons['ipaddress'], 'nName': jsons['username'], 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
-
-		except TypeError:
-			datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
-		
-		r = s.post('https://www.echoofamarok.com/RedX/assets/php/AddEntry', data=datasubmit)
-		print "Add to database"
 		r.connection.close()
 		if temp == "null":
 			return False
