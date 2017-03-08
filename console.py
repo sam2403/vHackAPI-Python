@@ -121,10 +121,15 @@ class Console:
 				try:
    					datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
 				except TypeError:
-					print "False data"
+					print "DATA FALSE"
 					return False
 			else:
-				datasubmit = {'nIP':jsons['ipaddress'], 'nName': jsons['username'], 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+				try:
+					datasubmit = {'nIP':jsons['ipaddress'], 'nName': jsons['username'], 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
+				except TypeError:
+					print "DATA FALSE"
+					return False
+
 		except TypeError:
 			try:
 				datasubmit = {'nIP':jsons['ipaddress'], 'nName': '', 'nSpam':jsons['spam'], 'nIPSpoof':jsons['spam'], 'nFirewall':jsons['fw'], 'nAntivirus':jsons['av'], 'nSDK':jsons['sdk'], 'nSpyware':jsons['spyware'], 'nBalance':jsons['money'], 'nAddedBy':'ULTIMATE'}
@@ -186,11 +191,15 @@ class Console:
 					password = self.enterPassword(imgs, ip, uhash)
 					jsons = json.loads(password)
 					if password:
-						if not "?" in str(money):
-							print "\n[TargetIP: " + str(ip) +"]\n\nMade " + "{:11,}".format(int(jsons['amount'])) + " and " + "{:2d}".format(int(jsons['eloch'])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + "{:11,}".format(int(money)) + "\n YourWinChance: " + str(winchance) + " Anonymous: "+ str(anonymous) +" username: "+ str(username) + " saving: " + str(saving)
-							return True
-						else:
-							print "\n[TargetIP: " + str(ip) + "]\n\nMade " + "{:11,}".format(int(jsons['amount'])) + " and " + "{:2d}".format(int(jsons['eloch'])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + money + "\n YourWinChance: " + winchance + " Anonymous: " + anonymous +" username: "+ username + " saving: " + saving
+						try:
+							if not "?" in str(money) and str(jsons['result']) == 0:
+								print "\n[TargetIP: " + str(ip) +"]\n\nMade " + "{:11,}".format(int(jsons['amount'])) + " and " + "{:2d}".format(int(jsons['eloch'])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + "{:11,}".format(int(money)) + "\n YourWinChance: " + str(winchance) + " Anonymous: "+ str(anonymous) +" username: "+ str(username) + " saving: " + str(saving)
+								return True
+							else:
+								print "\n[TargetIP: " + str(ip) + "]\n\nMade " + "{:11,}".format(int(jsons['amount'])) + " and " + "{:2d}".format(int(jsons['eloch'])) + " Rep." + "\n Antivirus: "+ str(avlevel) + " Firewall: " + str(fwlevel) + " Sdk: " + str(sdklevel) + " TotalMoney: " + "{:11,}".format(int(money)) + "\n YourWinChance: " + str(winchance) + " Anonymous: " + str(anonymous) +" username: "+ str(username) + " saving: " + str(saving)
+						except KeyError:
+							print "Bad attack"
+							return False
 					else:
 						print "Password Wrong"
 						return False

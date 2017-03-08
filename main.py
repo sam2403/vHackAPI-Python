@@ -41,7 +41,7 @@ updates = ["ipsp", "scan", "sdk", "av"]
 #Do you want to attack during tournament [True, False]
 joinTournament = True
 #Time to wait between each cycle in seconds
-wait = round(uniform(1,2), 2)
+wait = round(uniform(0,1), 2)
 wait_load = round(uniform(1,5), 2)
 
 c = Console(api)
