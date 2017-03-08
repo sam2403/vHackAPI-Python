@@ -6,7 +6,7 @@ remplace username and password for your account
 
 for install module...  
  
-```python
+```sh
 $ pip install requests  
 $ pip install pytesseract  
 or  
