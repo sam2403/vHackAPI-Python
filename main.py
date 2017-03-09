@@ -12,6 +12,13 @@ from collections import Counter
 import time
 import json
 
+def count_keys(mydict):
+    for key, value in mydict:
+        if isinstance(value, Mapping):
+            for item in count_keys(value):
+                yield 1
+        yield 1
+
 
 # Enter username and password
 api = API("username","password")
