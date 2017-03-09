@@ -77,8 +77,11 @@ class Console:
 	def getIP(self, blank):
 		ut = Utils()
 		info = self.myinfo()
-		info = json.loads(info)
-		uhash = info['uhash']
+		try:
+			info = json.loads(info)
+			uhash = info['uhash']
+		except TypeError:
+			pass
 		temp = ut.requestString("user::::pass::::uhash::::by", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + str(uhash) + "::::" + str(randint(0,1)), "vh_getImg.php")
 		jsons = json.loads(temp)
 		for i in range(0, len(jsons["data"])):
