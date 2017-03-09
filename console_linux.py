@@ -16,6 +16,7 @@ import cStringIO
 import requests
 import re
 import concurrent.futures
+from random import randint
 
 class Console:
 	def myinfo(self):
@@ -78,7 +79,7 @@ class Console:
 		info = self.myinfo()
 		info = json.loads(info)
 		uhash = info['uhash']
-		temp = ut.requestString("user::::pass::::uhash::::global", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + str(uhash) + "::::" + "0", "vh_getImg.php")
+		temp = ut.requestString("user::::pass::::uhash::::by", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + str(uhash) + "::::" + str(randint(0,1)), "vh_getImg.php")
 		jsons = json.loads(temp)
 		for i in range(0, len(jsons["data"])):
 			hostname = str(jsons["data"][i]["hostname"])
@@ -212,7 +213,7 @@ class Console:
 		print selection
 
 	def attack(self, amount, max, wait):
-		with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+		with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
 			for i in range(1,amount):
 				FBI, ips = self.getIP(True)
 				if FBI == 0:
