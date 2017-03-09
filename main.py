@@ -12,6 +12,13 @@ from collections import Counter
 import time
 import json
 
+def count_keys(mydict):
+    for key, value in mydict:
+        if isinstance(value, Mapping):
+            for item in count_keys(value):
+                yield 1
+        yield 1
+
 
 # Enter username and password
 api = API("username","password")
@@ -22,7 +29,7 @@ maxanti_normal = 1500
 maxanti_tournament = 1900
 
 # Enter Amount of Attacks normal
-attacks_normal = 3
+attacks_normal = 30
 
 # Enter Amount of Attacks in tournament
 attacks_tournament = 100
@@ -77,8 +84,12 @@ while True:
 
 	if attackneeded == False:
 		wait_load = round(uniform(1,5), 2)
-		usebooster = u.getTasks()
-		json_data = json.loads(usebooster)
+		try:
+			usebooster = u.getTasks()
+			json_data = json.loads(usebooster)
+		except ValueError:
+			print "Connexion Error try again..."
+			pass
 		try:
 			while len(json_data["data"]) > 1:
 				if int(json_data["boost"]) > 5:
@@ -92,6 +103,8 @@ while True:
 				json_data = json.loads(usebooster)
 		except KeyError:
 			pass
+		except TypeError:
+			pass
 
 	if b.attackable():
 		print "Attacking with Botnet"
@@ -103,10 +116,10 @@ while True:
 		wait = round(uniform(0,1), 2)
 
 	else:
-		print "Waiting... in normal " + str(wait_load) + "s"
+		print "Waiting... in normal " + str(wait) + "s"
 		attackneeded = True
 
 		if attackneeded:
-			c.attack(attacks_normal, maxanti_normal, wait_load)
+			c.attack(attacks_normal, maxanti_normal, wait)
 			attackneeded = False
-		wait_load = round(uniform(1,5), 2)
+		#wait_load = round(uniform(1,5), 2)
