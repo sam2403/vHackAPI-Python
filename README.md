@@ -1,7 +1,8 @@
 # VhackApi-Python
 Vhack API written in Python 2.7.
 
-[![VhackBot video here](https://img.youtube.com/vi/7Ot4xqhh4T8/1.jpg)](https://www.youtube.com/watch?v=7Ot4xqhh4T8) ### thanx for FluffySteamCat  
+[![VhackBot video here](https://img.youtube.com/vi/7Ot4xqhh4T8/1.jpg)](https://www.youtube.com/watch?v=7Ot4xqhh4T8)  
+### thanx for FluffySteamCat are record the bot
 
 The app is dev mode.  
 No return exactly great output thanx  
