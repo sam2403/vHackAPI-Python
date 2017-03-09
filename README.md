@@ -16,7 +16,8 @@ External dependencies you'll need include:
 To install these on Linux:
 ```sh
 $ pip install requests  
-$ pip install pytesseract  
+$ pip install pytesseract 
+$ pip install futures  
 $ pip install Pillow
 or  
 $ pip install tesseract
@@ -27,12 +28,13 @@ For Windows:
 C:\Users\User\pip install requests
 C:\Users\User\pip install pytesseract
 C:\Users\User\pip install Pillow
+C:\Users\User\pip install futures
 ```
 
 For launching on Linux distros:  
 ```sh
 $ rm -rf console.py
-$ mv console_linux.py console.py
+$ mv console_linux.py console.py 
 $ python2.7 main.py 
 or 
 $ ./main.py
