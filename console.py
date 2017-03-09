@@ -131,11 +131,14 @@ class Console:
 
 	def getIP(self, blank):
 		ut = Utils()
-		info = self.myinfo()
-		info = json.loads(info)
-		uhash = info['uhash']
-		temp = ut.requestString("user::::pass::::uhash::::global", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + str(uhash) + "::::" + "0", "vh_getImg.php")
-		jsons = json.loads(temp)
+		try:
+			info = self.myinfo()
+			info = json.loads(info)
+			uhash = info['uhash']
+			temp = ut.requestString("user::::pass::::uhash::::global", self.api.getUsername() + "::::" + self.api.getPassword() + "::::" + str(uhash) + "::::" + "0", "vh_getImg.php")
+			jsons = json.loads(temp)
+		except TypeError:
+			pass
 		for i in range(0, len(jsons["data"])):
 			hostname = str(jsons["data"][i]["hostname"])
 
