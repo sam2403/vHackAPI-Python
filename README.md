@@ -31,6 +31,8 @@ C:\Users\User\pip install Pillow
 
 For launching on Linux distros:  
 ```sh
+$ rm -rf console.py
+$ mv console_linux.py console.py
 $ python2.7 main.py 
 or 
 $ ./main.py
